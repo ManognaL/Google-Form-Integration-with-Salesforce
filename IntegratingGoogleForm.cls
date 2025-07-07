@@ -50,7 +50,7 @@ global with sharing class IntegratingGoogleForm {
 
             // Create Google Contact Form record
             GoogleForm_Records__c contactForm = new GoogleForm_Records__c();
-            contactForm.Name = firstName + ' ' + lastName;
+            contactForm.Name = firstName;
             contactForm.Last_Name__c = lastName;
             contactForm.Email__c = email;
             contactForm.Phone_Number__c = phoneNumber;
