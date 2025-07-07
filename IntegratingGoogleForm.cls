@@ -15,34 +15,51 @@ global with sharing class IntegratingGoogleForm {
 
             // Extract form data with null checks
             String firstName = formData.get('firstName') != null ? (String)formData.get('firstName') : '';
-            String lastName = formData.get('lastName') != null ? (String)formData.get('lastName') : ''; // Fixed typo
+            String lastName = formData.get('lastName') != null ? (String)formData.get('lastName') : '';
             String email = formData.get('email') != null ? (String)formData.get('email') : '';
             
-            // Handle phone number conversion from String to Number
-            Decimal phoneNumber = null;
+            // Handle phone number - now as String for Phone field type
+            String phoneNumber = null;
             if (formData.get('phoneNumber') != null) {
                 String phoneStr = String.valueOf(formData.get('phoneNumber'));
-                // Remove any non-numeric characters (spaces, dashes, parentheses, etc.)
-                phoneStr = phoneStr.replaceAll('[^0-9]', '');
-                if (!String.isEmpty(phoneStr)) {
-                    try {
-                        phoneNumber = Decimal.valueOf(phoneStr);
-                    } catch (Exception phoneEx) {
-                        System.debug('Error converting phone number: ' + phoneEx.getMessage());
-                        // Phone number will remain null if conversion fails
+                
+                // Basic phone number validation and formatting
+                if (!String.isEmpty(phoneStr.trim())) {
+                    // Remove extra whitespace
+                    phoneStr = phoneStr.trim();
+                    
+                    // Optional: Add basic phone number validation
+                    // Remove non-numeric characters for validation
+                    String numericOnly = phoneStr.replaceAll('[^0-9]', '');
+                    
+                    if (numericOnly.length() >= 10 && numericOnly.length() <= 15) {
+                        phoneNumber = phoneStr; // Keep original formatting
+                    } else {
+                        System.debug('Invalid phone number length: ' + numericOnly.length());
+                        // You can choose to either set to null or throw an error
+                        phoneNumber = null;
                     }
                 }
             }
 
+            // Temporarily removed validation for testing
+            System.debug('firstName: ' + firstName);
+            System.debug('lastName: ' + lastName);
+            System.debug('email: ' + email);
+            System.debug('phoneNumber: ' + phoneNumber);
+
             // Create Google Contact Form record
             GoogleForm_Records__c contactForm = new GoogleForm_Records__c();
-            contactForm.Name = firstName + ' ' + lastName; // Combine first and last name for Name field
+            contactForm.Name = firstName + ' ' + lastName;
             contactForm.Last_Name__c = lastName;
             contactForm.Email__c = email;
-            contactForm.Phone__c = phoneNumber; // Now properly converted to Number type
+            contactForm.Phone_Number__c = phoneNumber;
 
             // Insert the record
             insert contactForm;
+            
+            // Add proper content type header
+            RestContext.response.addHeader('Content-Type', 'application/json');
             
             // Return success response
             return JSON.serialize(new Map<String, Object>{
@@ -52,7 +69,7 @@ global with sharing class IntegratingGoogleForm {
             });
             
         } catch (Exception e) {
-            // Error Logging if any
+            // Error Logging
             System.debug('Error in handleFormSubmission: ' + e.getMessage());
             System.debug('Stack trace: ' + e.getStackTraceString());
             
