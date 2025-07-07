@@ -23,7 +23,7 @@ Google Form → Google Apps Script → Salesforce REST API → GoogleForm_Record
   - `Name` (Text)
   - `Last_Name__c` (Text)
   - `Email__c` (Email/Text)
-  - `Phone__c` (Number)
+  - `Phone_Number__c` (Number)
 - Salesforce Site enabled for REST API access
 
 ### Google Setup
@@ -50,7 +50,7 @@ Google Form → Google Apps Script → Salesforce REST API → GoogleForm_Record
 3. Add the following custom fields:
    - `Last_Name__c` (Text, 255)
    - `Email__c` (Email, 255)
-   - `Phone__c` (Number, 18, 0)
+   - `Phone_Number__c` (Number, 18, 0)
 
 #### Deploy Apex Class
 1. Go to **Setup** → **Apex Classes**
@@ -127,7 +127,7 @@ Create a Google Form with questions that match your field mapping:
 | First Name          | `firstName`     | `Name`           |
 | Last Name           | `lastName`      | `Last_Name__c`   |
 | Email               | `email`         | `Email__c`       |
-| Phone               | `phoneNumber`   | `Phone__c`       |
+| Phone               | `phoneNumber`   | `Phone_Number__c`       |
 
 ## 🧪 Testing
 
